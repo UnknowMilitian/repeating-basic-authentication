@@ -1,3 +1,4 @@
+import base64
 from django.shortcuts import render
 from rest_framework import generics
 from django.contrib.auth.models import User
@@ -26,6 +27,13 @@ class RegisterView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
 
+        # Encode username and password in base64
+        credentials = f"{user.username}:{request.data['password']}"
+        encoded_credentials = base64.b64encode(credentials.encode()).decode()
+
+        # Print encoded credentials to the terminal
+        print(f"Base64 Encoded Credentials on Registration: {encoded_credentials}")
+
         return Response(
             {
                 "user": {
@@ -34,7 +42,7 @@ class RegisterView(generics.CreateAPIView):
                     "first_name": user.first_name,
                     "last_name": user.last_name,
                 },
-                "message": "User is registered succesfully !",
+                "message": "User is registered successfully!",
             },
             status=status.HTTP_201_CREATED,
         )

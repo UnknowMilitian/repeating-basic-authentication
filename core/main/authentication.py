@@ -1,3 +1,4 @@
+# authentication.py
 import base64
 from django.contrib.auth.models import User
 from rest_framework.authentication import BaseAuthentication
@@ -27,6 +28,10 @@ class CustomBasicAuthentication(BaseAuthentication):
         if not user.check_password(password):
             raise AuthenticationFailed("Incorrect password")
 
-        print(f"Authenticated user: {user.username}")
+        # Print Base64 credentials to the terminal
+        base64_credentials = base64.b64encode(
+            f"{username}:{password}".encode()
+        ).decode()
+        print(f"Base64 Encoded Credentials on Login: {base64_credentials}")
 
         return (user, None)
